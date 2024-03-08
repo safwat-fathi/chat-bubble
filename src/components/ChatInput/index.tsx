@@ -56,7 +56,7 @@ const ChatInput = ({ onSendMessage }: ChatInputProps) => {
             onChange={handleFile}
             className="hidden"
             type="file"
-            accept="image/*"
+            // accept="image/*"
             placeholder="type your message here..."
           />
           {file ? file.name : "Upload File"}

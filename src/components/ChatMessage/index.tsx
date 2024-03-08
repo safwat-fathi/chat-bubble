@@ -1,10 +1,25 @@
 import clsx from "clsx";
 
 type TProps = {
-  type: "text" | "image";
+  type: "text" | "image" | "audio";
   message: string;
   inbound: boolean;
   avatar: string;
+};
+
+const renderMessage = (type: TProps["type"], message: string) => {
+  switch (type) {
+    case "text":
+      return <p>{message}</p>;
+    case "image":
+      return <img src={message} alt="" className="h-40 w-40 object-cover" />;
+    case "audio":
+      return (
+        <audio controls src={message}>
+          Your browser does not support the audio element.
+        </audio>
+      );
+  }
 };
 
 const ChatMessage = ({ type, avatar, inbound, message }: TProps) => {
@@ -28,11 +43,7 @@ const ChatMessage = ({ type, avatar, inbound, message }: TProps) => {
           "bg-blue-400 rounded-bl-3xl rounded-tl-3xl rounded-tr-xl": inbound,
         })}
       >
-        {type === "text" ? (
-          <p>{message}</p>
-        ) : (
-          <img src={message} alt="" className="h-40 w-40 object-cover" />
-        )}
+        {renderMessage(type, message)}
       </div>
       {inbound && (
         <img

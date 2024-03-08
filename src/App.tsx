@@ -52,7 +52,14 @@ function App() {
   const handleSendMessage = async (content: File | string) => {
     try {
       const newMessage: TMessage = {
-        type: content instanceof File ? "image" : "text",
+        type:
+          content instanceof File
+            ? content.type.startsWith("image/")
+              ? "image"
+              : content.type.startsWith("audio/")
+              ? "audio"
+              : "text"
+            : "text",
         id: String(messages.length + 1),
         content:
           content instanceof File ? URL.createObjectURL(content) : content,
