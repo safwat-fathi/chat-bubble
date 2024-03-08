@@ -3,6 +3,7 @@ import ChatInput from "./components/ChatInput";
 import ChatMessage from "./components/ChatMessage";
 import { TMessage } from "./types/model/message";
 import { TUser } from "./types/model/user";
+import ChatContainer from "./components/ChatContainer";
 
 const data: TMessage[] = [
   {
@@ -68,23 +69,21 @@ function App() {
   };
 
   return (
-    <div className="m-2 w-96">
-      <div className="w-full px-5 flex flex-col justify-between border border-blue-500 rounded-lg">
-        <div className="flex flex-col mt-5 h-64 overflow-y-auto">
-          {messages.map(message => (
-            <ChatMessage
-              key={message.id}
-              type={message.type}
-              inbound={message.sender.id == user.id}
-              avatar={message.sender.avatar}
-              message={message.content}
-            />
-          ))}
-        </div>
-
-        <ChatInput onSendMessage={handleSendMessage} />
+    <ChatContainer title="Group Chat" avatar={user.avatar} color="blue-500">
+      <div className="flex flex-col mt-5 h-64 overflow-y-auto">
+        {messages.map(message => (
+          <ChatMessage
+            key={message.id}
+            type={message.type}
+            inbound={message.sender.id == user.id}
+            avatar={message.sender.avatar}
+            message={message.content}
+          />
+        ))}
       </div>
-    </div>
+
+      <ChatInput onSendMessage={handleSendMessage} />
+    </ChatContainer>
   );
 }
 
