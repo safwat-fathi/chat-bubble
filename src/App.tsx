@@ -1,62 +1,88 @@
+import { useState } from "react";
+import ChatInput from "./components/ChatInput";
 import ChatMessage from "./components/ChatMessage";
+import { TMessage } from "./types/model/message";
+import { TUser } from "./types/model/user";
+
+const data: TMessage[] = [
+  {
+    id: "1",
+    type: "text",
+    content: "Welcome to group everyone !",
+    sender: {
+      id: "1",
+      name: "John Doe",
+      avatar: "https://source.unsplash.com/vpOeXr5wmR4/600x600",
+    },
+  },
+  {
+    id: "2",
+    type: "text",
+    content:
+      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quaerat at praesentium, aut ullam delectus odio error sit rem. Architecto nulla doloribus laborum illo rem enim dolor odio saepe, consequatur quas?",
+    sender: {
+      id: "2",
+      name: "Zaki Doe",
+      avatar: "https://source.unsplash.com/vpOeXr5wmR4/600x600",
+    },
+  },
+  {
+    id: "3",
+    type: "image",
+    content:
+      "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse4.mm.bing.net%2Fth%3Fid%3DOIP.7ZltE0XDT2j9Z_0gjw2PKwHaD4%26pid%3DApi&f=1&ipt=5fdbfbdc81504e694f51bf13f7b53253da88fd9c8166620e1e8f2daaadeb06c1&ipo=images",
+    sender: {
+      id: "3",
+      name: "Ali Doe",
+      avatar: "https://source.unsplash.com/vpOeXr5wmR4/600x600",
+    },
+  },
+];
+
+const user: TUser = {
+  id: "1",
+  name: "John Doe",
+  avatar: "https://source.unsplash.com/vpOeXr5wmR4/600x600",
+};
 
 function App() {
+  const [messages, setMessages] = useState<TMessage[]>(data);
+
+  const handleSendMessage = async (content: File | string) => {
+    try {
+      const newMessage: TMessage = {
+        type: content instanceof File ? "image" : "text",
+        id: String(messages.length + 1),
+        content:
+          content instanceof File ? URL.createObjectURL(content) : content,
+        sender: user,
+      };
+
+      setMessages([...messages, newMessage]);
+
+      // handle sending message to server
+      // ....
+    } catch (error) {
+      throw new Error(error as any);
+    }
+  };
+
   return (
-    <div className="m-2">
-      <div className="w-full px-5 flex flex-col justify-between border border-gray-500">
-        <div className="flex flex-col mt-5">
-          <ChatMessage inbound message="Welcome to group everyone !" />
-          <div className="flex justify-start mb-4">
-            <img
-              src="https://source.unsplash.com/vpOeXr5wmR4/600x600"
-              className="object-cover h-8 w-8 rounded-full"
-              alt=""
+    <div className="m-2 w-96">
+      <div className="w-full px-5 flex flex-col justify-between border border-blue-500 rounded-lg">
+        <div className="flex flex-col mt-5 h-64 overflow-y-auto">
+          {messages.map(message => (
+            <ChatMessage
+              key={message.id}
+              type={message.type}
+              inbound={message.sender.id == user.id}
+              avatar={message.sender.avatar}
+              message={message.content}
             />
-            <div className="ml-2 py-3 px-4 bg-gray-400 rounded-br-3xl rounded-tr-3xl rounded-tl-xl text-white">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Quaerat
-              at praesentium, aut ullam delectus odio error sit rem. Architecto
-              nulla doloribus laborum illo rem enim dolor odio saepe,
-              consequatur quas?
-            </div>
-            ChatMessage
-          </div>
-          <div className="flex justify-end mb-4">
-            <div>
-              <div className="mr-2 py-3 px-4 bg-blue-400 rounded-bl-3xl rounded-tl-3xl rounded-tr-xl text-white">
-                Lorem ipsum dolor, sit amet consectetur adipisicing elit.
-                Magnam, repudiandae.
-              </div>
-
-              <div className="mt-4 mr-2 py-3 px-4 bg-blue-400 rounded-bl-3xl rounded-tl-3xl rounded-tr-xl text-white">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                Debitis, reiciendis!
-              </div>
-            </div>
-            <img
-              src="https://source.unsplash.com/vpOeXr5wmR4/600x600"
-              className="object-cover h-8 w-8 rounded-full"
-              alt=""
-            />
-          </div>
-          <div className="flex justify-start mb-4">
-            <img
-              src="https://source.unsplash.com/vpOeXr5wmR4/600x600"
-              className="object-cover h-8 w-8 rounded-full"
-              alt=""
-            />
-            <div className="ml-2 py-3 px-4 bg-gray-400 rounded-br-3xl rounded-tr-3xl rounded-tl-xl text-white">
-              happy holiday guys!
-            </div>
-          </div>
+          ))}
         </div>
 
-        <div className="py-5">
-          <input
-            className="w-full bg-gray-300 py-5 px-3 rounded-xl"
-            type="text"
-            placeholder="type your message here..."
-          />
-        </div>
+        <ChatInput onSendMessage={handleSendMessage} />
       </div>
     </div>
   );

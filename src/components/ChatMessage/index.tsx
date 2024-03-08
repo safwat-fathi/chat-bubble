@@ -1,26 +1,46 @@
 import clsx from "clsx";
 
 type TProps = {
+  type: "text" | "image";
   message: string;
   inbound: boolean;
+  avatar: string;
 };
 
-const ChatMessage = ({ inbound, message }: TProps) => {
+const ChatMessage = ({ type, avatar, inbound, message }: TProps) => {
   return (
     <div
-      className={clsx("flex mb-4", {
+      className={clsx("flex gap-2 mb-4", {
         "justify-end": inbound,
         "justify-start": !inbound,
       })}
     >
-      <div className="mr-2 py-3 px-4 bg-blue-400 rounded-bl-3xl rounded-tl-3xl rounded-tr-xl text-white">
-        {message}
+      {!inbound && (
+        <img
+          src={avatar}
+          className="object-cover h-8 w-8 rounded-full"
+          alt=""
+        />
+      )}
+      <div
+        className={clsx("py-3 px-4 text-white", {
+          "bg-gray-400 rounded-br-3xl rounded-tr-3xl rounded-tl-xl": !inbound,
+          "bg-blue-400 rounded-bl-3xl rounded-tl-3xl rounded-tr-xl": inbound,
+        })}
+      >
+        {type === "text" ? (
+          <p>{message}</p>
+        ) : (
+          <img src={message} alt="" className="h-40 w-40 object-cover" />
+        )}
       </div>
-      <img
-        src="https://source.unsplash.com/vpOeXr5wmR4/600x600"
-        className="object-cover h-8 w-8 rounded-full"
-        alt=""
-      />
+      {inbound && (
+        <img
+          src={avatar}
+          className="object-cover h-8 w-8 rounded-full"
+          alt=""
+        />
+      )}
     </div>
   );
 };
