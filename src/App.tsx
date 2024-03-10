@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { ElementRef, useEffect, useRef, useState } from "react";
 import ChatInput from "./components/ChatInput";
 import ChatMessage from "./components/ChatMessage";
 import { TMessage } from "./types/model/message";
@@ -47,7 +47,12 @@ const user: TUser = {
 };
 
 function App() {
+  const divRef = useRef<ElementRef<"div">>(null);
+
   const [messages, setMessages] = useState<TMessage[]>(data);
+  const [expanded, setExpanded] = useState(false);
+  const [scrollPosition, setScrollPosition] = useState(0);
+  console.log("🚀 ~ App ~ scrollPosition:", scrollPosition);
 
   const handleSendMessage = async (content: File | string) => {
     try {
@@ -75,9 +80,37 @@ function App() {
     }
   };
 
+  useEffect(() => {
+    if (divRef.current) {
+      // divRef.current.scrollTop = divRef.current.scrollHeight;
+      divRef.current.scrollTop = divRef.current.scrollHeight;
+      setScrollPosition(divRef.current.scrollTop);
+      // console.log(
+      //   "🚀 ~ useEffect ~ divRef.current.scrollTop:",
+      //   divRef.current.scrollTop
+      // );
+    }
+
+    return () => {
+      if (divRef.current) {
+        divRef.current.scrollTop = scrollPosition;
+      }
+    };
+  }, [expanded, messages]);
+
   return (
-    <ChatContainer title="Group Chat" avatar={user.avatar} color="blue-500">
-      <div className="flex flex-col mt-5 h-64 overflow-y-auto">
+    <ChatContainer
+      title="Group Chat"
+      avatar={user.avatar}
+      color="blue-500"
+      expanded={expanded}
+      onExpand={() => setExpanded(true)}
+      onCollapse={() => setExpanded(false)}
+    >
+      <div
+        ref={divRef}
+        className="flex flex-col mt-5 h-64 overflow-y-auto scroll-smooth"
+      >
         {messages.map(message => (
           <ChatMessage
             key={message.id}
