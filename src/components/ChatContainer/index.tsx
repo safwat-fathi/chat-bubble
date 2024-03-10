@@ -19,8 +19,6 @@ const ChatContainer = ({
   onExpand,
   children,
 }: PropsWithChildren<Props>) => {
-  // const [expanded, setExpanded] = useState(false);
-
   const handleExpand = () => {
     if (expanded && onCollapse) {
       onCollapse();

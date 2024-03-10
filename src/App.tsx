@@ -51,8 +51,6 @@ function App() {
 
   const [messages, setMessages] = useState<TMessage[]>(data);
   const [expanded, setExpanded] = useState(false);
-  const [scrollPosition, setScrollPosition] = useState(0);
-  console.log("🚀 ~ App ~ scrollPosition:", scrollPosition);
 
   const handleSendMessage = async (content: File | string) => {
     try {
@@ -82,20 +80,8 @@ function App() {
 
   useEffect(() => {
     if (divRef.current) {
-      // divRef.current.scrollTop = divRef.current.scrollHeight;
       divRef.current.scrollTop = divRef.current.scrollHeight;
-      setScrollPosition(divRef.current.scrollTop);
-      // console.log(
-      //   "🚀 ~ useEffect ~ divRef.current.scrollTop:",
-      //   divRef.current.scrollTop
-      // );
     }
-
-    return () => {
-      if (divRef.current) {
-        divRef.current.scrollTop = scrollPosition;
-      }
-    };
   }, [expanded, messages]);
 
   return (
